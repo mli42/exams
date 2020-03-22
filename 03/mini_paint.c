@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/21 22:01:56 by mli               #+#    #+#             */
-/*   Updated: 2020/03/22 00:32:53 by mli              ###   ########.fr       */
+/*   Updated: 2020/03/22 02:33:14 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,6 @@ int		ft_error(char *str)
 	write(1, "\n", 1);
 	return (1);
 }
-// Pour faciliter les calculs nous n'utiliserons que le coin en haut à gauche d'un pixel pour savoir si celui ci est dans un cercle ou pas
-// Si le coin en haut a gauche d'un pixel est à une distance inferieur ou égale au rayon d'un cercle, il fait alors parti de ce cercle
-// De plus:
-//	Si le coin en haut a gauche d'un pixel est à une distance superieure ou egale à 1 de la bordure d un cercle celui ci ne fait pas parti d'un cercle vide
-//	Si le coin en haut a gauche d'un pixel est à une distance inferieur à 1 de la bordure d'un cercle, il fait alors parti d'un cercle vide
 
 char	**ft_init_canvas(FILE *file, t_win *win)
 {
@@ -73,17 +68,39 @@ char	**ft_init_canvas(FILE *file, t_win *win)
 
 float	ft_dist_pt(t_circle *circle, int i, int j)
 {
-	srqt((circle->x - i) * (circle->x - i) + (circle->y - j) * (circle->y - j));
+	return (sqrtf((circle->x - i) * (circle->x - i) + (circle->y - j) * (circle->y - j)));
 }
 
-void	ft_empty_c(t_win *win, t_circle *circle)
+void	ft_empty_c(char **canvas, t_win *win, t_circle *circle)
 {
+	int j = -1; int i;
+	float dist;
 
+	while (++j < win->win[1])
+	{
+		i = -1;
+		while (++i < win->win[0])
+		{
+			dist = ft_dist_pt(circle, i, j);
+			if (dist >= circle->rad - 1 && dist <= circle->rad)
+				canvas[j][i] = circle->draw;
+		}
+	}
 }
 
-void	ft_full_c(t_win *win, t_circle *circle)
+void	ft_full_c(char **canvas, t_win *win, t_circle *circle)
 {
+	int j = -1; int i;
 
+	while (++j < win->win[1])
+	{
+		i = -1;
+		while (++i < win->win[0])
+		{
+			if (ft_dist_pt(circle, i, j) <= circle->rad)
+				canvas[j][i] = circle->draw;
+		}
+	}
 }
 
 int		ft_painter(FILE *file)
@@ -99,15 +116,24 @@ int		ft_painter(FILE *file)
 		&circle.x, &circle.y, &circle.rad, &circle.draw)) > 0)
 	{
 		if (circle.c_type == 'c')
-			;
+			ft_empty_c(canvas, &win, &circle);
 		else if (circle.c_type == 'C')
-			;
+			ft_full_c(canvas, &win, &circle);
 		else
 			break ;
 //		printf("%c %f %f %f %c\n", circle.c_type, circle.x, circle.y, circle.rad, circle.draw);
 	}
 	if (ret != EOF)
-		return (1);
+		return (ft_error("Error: Operation file corrupted"));
+	int j = -1;
+	while (++j < win.win[1])
+	{
+		write(1, canvas[j], win.win[0]);
+		write(1, "\n", 1);
+		free(canvas[j]);
+	}
+	free(canvas);
+	fclose(file);
 	return (0);
 }
 
@@ -119,7 +145,5 @@ int		main(int argc, char **argv)
 		return (ft_error("Error: argument"));
 	if (!(file = fopen(argv[1], "r")))
 		return (ft_error("Error: Operation file corrupted"));
-	ft_painter(file);
-	fclose(file);
-	return (0);
+	return (ft_painter(file));
 }
