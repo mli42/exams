@@ -5,145 +5,165 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/03/21 22:01:56 by mli               #+#    #+#             */
-/*   Updated: 2020/03/22 02:33:14 by mli              ###   ########.fr       */
+/*   Created: 2020/09/03 16:50:40 by mli               #+#    #+#             */
+/*   Updated: 2020/09/03 21:43:59 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <stdio.h>
 #include <math.h>
 
-typedef struct	s_win
+typedef struct	s_canvas
 {
-	int		win[2];
-	char	back;
-}				t_win;
+	int width;
+	int height;
+	char bg;
+}				t_canvas;
 
-typedef struct	s_circle
+typedef struct	s_line
 {
-	char	c_type;
-	float	x;
-	float	y;
-	float	rad;
-	char	draw;
-}				t_circle;
+	char type;
+	float x;
+	float y;
+	float rad;
+	char c;
+}				t_line;
 
-int		ft_strlen(char *s)
+FILE *file = NULL;
+char **canvas = NULL;
+t_canvas tcan;
+t_line tline;
+
+int		ft_strlen(char *str)
 {
-	int i = 0;
-
-	while (s[i])
-		i++;
+	int i = -1;
+	while (str[++i])
+		;
 	return (i);
+}
+
+int		ft_exit(int ret)
+{
+	if (!file)
+		fclose(file);
+	if (canvas)
+	{
+		while (--tcan.height >= 0)
+			free(canvas[tcan.height]);
+		free(canvas);
+	}
+	return (ret);
 }
 
 int		ft_error(char *str)
 {
 	write(1, str, ft_strlen(str));
 	write(1, "\n", 1);
+	return (ft_exit(1));
+}
+
+int		get_canvas()
+{
+	if (fscanf(file, "%d %d %c", &tcan.width, &tcan.height, &tcan.bg) < 1)
+		return (0);
+	if (tcan.width <= 0 || tcan.width > 300 ||
+			tcan.height <= 0 || tcan.height > 300)
+		return (0);
+	if (!(canvas = calloc(tcan.height, sizeof(char *))))
+		return (0);
+	int height = tcan.height;
+	while (--height >= 0)
+	{
+		if (!(canvas[height] = malloc(sizeof(char) * tcan.width)))
+			return (0);
+		memset(canvas[height], tcan.bg, tcan.width);
+	}
 	return (1);
 }
 
-char	**ft_init_canvas(FILE *file, t_win *win)
+void	print_canvas()
 {
-	int j = -1;
-	char **canvas;
-
-	if (!fscanf(file, "%d %d %c", &win->win[0], &win->win[1], &win->back) ||
-	win->win[0] <= 0 || win->win[0] > 300 || win->win[1] <= 0 || win->win[1] > 300)
-		return (NULL);
-	if (!(canvas = (char **)calloc(sizeof(char *), win->win[1])))
-		return (NULL);
-	while (++j < win->win[1])
+	int i = -1;
+	while (++i < tcan.height)
 	{
-		if (!(canvas[j] = (char *)calloc(sizeof(char), win->win[0])))
-			return (NULL);
-		memset(canvas[j], win->back, win->win[0]);
-	}
-	return (canvas);
-}
-
-float	ft_dist_pt(t_circle *circle, int i, int j)
-{
-	return (sqrtf((circle->x - i) * (circle->x - i) + (circle->y - j) * (circle->y - j)));
-}
-
-void	ft_empty_c(char **canvas, t_win *win, t_circle *circle)
-{
-	int j = -1; int i;
-	float dist;
-
-	while (++j < win->win[1])
-	{
-		i = -1;
-		while (++i < win->win[0])
-		{
-			dist = ft_dist_pt(circle, i, j);
-			if (dist >= circle->rad - 1 && dist <= circle->rad)
-				canvas[j][i] = circle->draw;
-		}
-	}
-}
-
-void	ft_full_c(char **canvas, t_win *win, t_circle *circle)
-{
-	int j = -1; int i;
-
-	while (++j < win->win[1])
-	{
-		i = -1;
-		while (++i < win->win[0])
-		{
-			if (ft_dist_pt(circle, i, j) <= circle->rad)
-				canvas[j][i] = circle->draw;
-		}
-	}
-}
-
-int		ft_painter(FILE *file)
-{
-	int			ret;
-	t_win		win;
-	t_circle	circle;
-	char		**canvas;
-
-	if (!(canvas = ft_init_canvas(file, &win)))
-		return (1);
-	while ((ret = fscanf(file, "%s %f %f %f %s", &circle.c_type,
-		&circle.x, &circle.y, &circle.rad, &circle.draw)) > 0)
-	{
-		if (circle.c_type == 'c')
-			ft_empty_c(canvas, &win, &circle);
-		else if (circle.c_type == 'C')
-			ft_full_c(canvas, &win, &circle);
-		else
-			break ;
-//		printf("%c %f %f %f %c\n", circle.c_type, circle.x, circle.y, circle.rad, circle.draw);
-	}
-	if (ret != EOF)
-		return (ft_error("Error: Operation file corrupted"));
-	int j = -1;
-	while (++j < win.win[1])
-	{
-		write(1, canvas[j], win.win[0]);
+		write(1, canvas[i], tcan.width);
 		write(1, "\n", 1);
-		free(canvas[j]);
 	}
-	free(canvas);
-	fclose(file);
+}
+
+int		ft_getline()
+{
+	int ret;
+
+	memset(&tline, 0, sizeof(tline));
+	ret = fscanf(file, "\n%c %f %f %f %c", &tline.type, &tline.x, &tline.y, \
+			&tline.rad, &tline.c);
+	if (tline.type == '\0')
+		return (2);
+	if (ret < 1)
+		return (0);
+	if (tline.rad <= 0 || (tline.type != 'C' && tline.type != 'c'))
+		return (0);
+	return (1);
+}
+
+float	ft_ptdist(float xa, float ya, float xb, float yb)
+{
+	const float dist = sqrtf((xa - xb) * (xa - xb) + (ya - yb) * (ya - yb));
+	return (dist);
+}
+
+int		do_color(int i, int j)
+{
+	const float dist = ft_ptdist(i, j, tline.x, tline.y);
+
+	if (dist > tline.rad)
+		return (0);
+	if (tline.type == 'C')
+		return (1);
+	else
+	{
+		if (dist > tline.rad - 1)
+			return (1);
+	}
 	return (0);
+}
+
+int		process_lines()
+{
+	int ret; int i; int j;
+
+	while ((ret = ft_getline()) == 1)
+	{
+		j = -1;
+		while (++j < tcan.height)
+		{
+			i = -1;
+			while (++i < tcan.width)
+			{
+				if (do_color(i, j))
+					canvas[j][i] = tline.c;
+			}
+		}
+	}
+	return (ret);
 }
 
 int		main(int argc, char **argv)
 {
-	FILE	*file;
-
+	memset(&tcan, 0, sizeof(tcan));
+	memset(&tline, 0, sizeof(tline));
 	if (argc != 2)
-		return (ft_error("Error: argument"));
+		return(ft_error("Error: argument"));
 	if (!(file = fopen(argv[1], "r")))
-		return (ft_error("Error: Operation file corrupted"));
-	return (ft_painter(file));
+		return(ft_error("Error: Operation file corrupted"));
+	if (!get_canvas())
+		return(ft_error("Error: Operation file corrupted"));
+	if (!process_lines())
+		return(ft_error("Error: Operation file corrupted"));
+	print_canvas();
+	return (ft_exit(0));
 }
