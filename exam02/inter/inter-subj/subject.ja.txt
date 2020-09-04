@@ -1,0 +1,20 @@
+課題名            : inter
+提出ファイル       : inter.c
+使用可能な関数      : write
+--------------------------------------------------------------------------------
+
+２つの文字列をコマンドライン引数から受け取り、２つの文字列にあらわれる文字をあらわれる順に
+標準出力に出力するプログラムを書きなさい。それと改行を標準出力に出力しなさい。
+
+もしコマンドライン引数の数が2つでは無い場合、改行だけを標準出力に出力する。
+
+例）
+
+$>./inter "padinton" "paqefwtdjetyiytjneytjoeyjnejeyj" | cat -e
+padinto$
+$>./inter ddf6vewg64f gtwthgdwthdwfteewhrtag6h4ffdhsd | cat -e
+df6ewg4$
+$>./inter "nothing" "This sentence hides nothing" | cat -e
+nothig$
+$>./inter | cat -e
+$

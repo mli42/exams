@@ -1,0 +1,29 @@
+Assignment name  : ft_printf
+Expected files   : ft_printf.c
+Allowed functions: malloc, free, write, va_start, va_arg, va_copy, va_end
+--------------------------------------------------------------------------------
+
+Escriba una función que se llame `ft_printf`, que reproducirá una pequeña parte del comportamiento del verdadero printf, con las siguientes limitaciones:
+
+
+- Sólo gestionará las conversiones : s,d y x
+- Debe gestionar el tamaño mínimo de campo. (Nunca probaremos su programa con un tamaño de campo igual a 0)
+- Sólo gestionará el flag de precisión `.`.
+
+La función deberá seguir el siguiente prototipo:
+
+int ft_printf(const char *, ... );
+
+Antes de empezar, le aconsejamos que lea `man 3 printf` y `man va_arg`.
+Le aconsejamos que para probar su programa lo compare con el verdadero printf.
+
+Ejemplos de salida de la función:
+
+call: ft_printf("%10.2s\n", "toto");
+out:        to$
+
+call: ft_printf("Magic %s is %5d", "number", 42);
+out:Magic number is    42%
+
+call: ft_printf("Hexadecimal for %d is %x\n", 42, 42);
+out:Hexadecimal for 42 is 2a$
