@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/28 17:07:47 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/28 21:13:55 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	**getNextcmd(char **current)
 {
 	char **NextOpe;
 
-	if ((NextOpe = getNextOpe(current)))
+	if (*(NextOpe = getNextOpe(current)))
 		return (NextOpe + 1);
 	return (NULL);
 }
@@ -58,9 +58,11 @@ char	**getPrevcmd(char **current)
 {
 	char **PrevOpe;
 
-	if ((PrevOpe = getPrevOpe(current)))
-		if ((PrevOpe = getPrevOpe(PrevOpe)))
-			return (PrevOpe);
+	if (*(PrevOpe = getPrevOpe(current)))
+	{
+		PrevOpe = getPrevOpe(PrevOpe);
+		return (PrevOpe + 1);
+	}
 	return (NULL);
 }
 
@@ -69,7 +71,9 @@ int		main(int argc, char **argv)
 	g_i = 0;
 	argv[0] = NULL;
 	g_argv = &argv[1];
-	printf("%s\n", *getNextcmd(g_argv));
-	printf("%s\n", getStr(getPrevcmd(&g_argv[argc - 1])));
+	printf("%s\n", getStr(getNextcmd(g_argv)));
+	printf("%s\n", getStr(getPrevcmd(&g_argv[argc - 2])));
+//	for (int i = 0; i <= argc; i++)
+//		printf("END: [%3d] [%ld] [%s]\n", i, (long int)&argv[i], argv[i]);
 	(void)argc; (void)argv;
 }
