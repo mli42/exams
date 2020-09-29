@@ -6,11 +6,13 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/29 12:20:57 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/29 23:15:15 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "microshell.h"
+
+extern char	**first_last[2];
 
 int		isOpe(char *str)
 {
@@ -46,6 +48,10 @@ char	**getNextcmd(char **current)
 {
 	char **NextOpe;
 
+	if (!current || (*current == NULL && current != first_last[0]))
+		return (NULL);
+	if (!*current || isOpe(*current))
+		return (current + 1);
 	if (*(NextOpe = getNextOpe(current)))
 		return (NextOpe + 1);
 	return (NULL);
@@ -55,6 +61,10 @@ char	**getPrevcmd(char **current)
 {
 	char **PrevOpe;
 
+	if (!current || (*current == NULL && current != first_last[1]))
+		return (NULL);
+	if (!*current || isOpe(*current))
+		return (getPrevOpe(current) + 1);
 	if (*(PrevOpe = getPrevOpe(current)))
 	{
 		PrevOpe = getPrevOpe(PrevOpe);
