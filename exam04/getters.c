@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/29 23:15:15 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 10:20:20 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*getStr(char **array)
 
 char	**getNextOpe(char **current)
 {
-	if (*current && isOpe(*current))
+	if (current == first_last[0] || (*current && isOpe(*current)))
 		current++;
 	while (*current && !isOpe(*current))
 		current++;
@@ -37,7 +37,7 @@ char	**getNextOpe(char **current)
 
 char	**getPrevOpe(char **current)
 {
-	if (*current && isOpe(*current))
+	if (current == first_last[1] || (*current && isOpe(*current)))
 		current--;
 	while (*current && !isOpe(*current))
 		current--;

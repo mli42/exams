@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/29 23:17:00 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 10:25:49 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,14 @@ static void ft_cd(char **token)
 static void	ft_binary(char **token)
 {
 	extern char **environ;
+	pid_t		pid;
 
+	if ((pid = fork()) != 0)
+	{
+		waitpid(pid, NULL, 0);
+		return ;
+	}
+	*getNextOpe(token) = NULL;
 	if (execve(*token, token, environ) == -1)
 	{
 		ft_putendl_fd("error: cannot execute ", 2, 0);
@@ -66,7 +73,8 @@ static void	ft_binary(char **token)
 
 void	exec_cmd(char **token)
 {
-//	printf("-- %s\n", *token);
+	if (!token || !*token)
+		return ;
 	if (!strcmp(*token, "cd"))
 		ft_cd(token);
 	else
