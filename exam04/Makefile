@@ -6,11 +6,11 @@
 #    By: mli <mli@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/09/11 12:06:29 by mli               #+#    #+#              #
-#    Updated: 2020/09/29 12:22:41 by mli              ###   ########.fr        #
+#    Updated: 2020/10/01 00:00:09 by mli              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = a.out
+NAME = microshell
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror

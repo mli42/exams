@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/30 22:41:05 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 23:59:23 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,11 +98,11 @@ void	exec_pipe(char **token)
 	static char **pipe = NULL;
 
 	if (pipe == NULL)
+	{
 		while (*(tmp = getNextOpe(lastpipe)) && !strcmp(*tmp, "|"))
-		{
-			pipe = tmp;
 			lastpipe = tmp;
-		}
+		pipe = lastpipe;
+	}
 //	printf("%s [%s] %s\n",
 //		getStr(getPrevcmd(lastpipe)), *token, getStr(getNextcmd(lastpipe)));
 	if ((pid = fork()) == 0)
