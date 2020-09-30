@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/30 17:03:16 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 22:41:05 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ char	**g_argv;
 int		g_argc;
 
 char	**first_last[2];
-
-int		g_do_pipe = 0;
 
 static int	ft_strlen(const char *const str)
 {
@@ -77,23 +75,19 @@ static void	ft_do_pipe(char **token)
 	if ((pid = fork()) == 0)
 	{
 		close(fildes[0]);
-		//printf("left [%s %s]\n", *PrevChild(token), *(PrevChild(token) + 1));
 		dup2(fildes[1], 1);
-		exec(getPrevcmd(token));
+		exec(PrevChild(token));
 		close(fildes[1]);
 	}
 	else
 	{
 		close(fildes[1]);
-		//printf("right [%s %s]\n", *NextChild(token), *(NextChild(token) + 1));
 		dup2(fildes[0], 0);
-		exec(getNextcmd(token));
+		exec(NextChild(token));
 		close(fildes[0]);
 		waitpid(pid, NULL, 0);
 	}
-	(void)token;
 	exit(0);
-(void)PrevChild; (void)NextChild;
 }
 
 void	exec_pipe(char **token)
@@ -101,19 +95,26 @@ void	exec_pipe(char **token)
 	pid_t	pid;
 	char	**lastpipe = token;
 	char	**tmp;
+	static char **pipe = NULL;
 
-	if (g_do_pipe == 0 && ++g_do_pipe)
+	if (pipe == NULL)
 		while (*(tmp = getNextOpe(lastpipe)) && !strcmp(*tmp, "|"))
+		{
+			pipe = tmp;
 			lastpipe = tmp;
-//	printf("%s | %s\n", getStr(getPrevcmd(lastpipe)), getStr(getNextcmd(lastpipe)));
+		}
+//	printf("%s [%s] %s\n",
+//		getStr(getPrevcmd(lastpipe)), *token, getStr(getNextcmd(lastpipe)));
 	if ((pid = fork()) == 0)
 		ft_do_pipe(lastpipe);
 	else
 		waitpid(pid, NULL, 0);
-	(void)ft_do_pipe;
-	//g_do_pipe = 0;
+	if (lastpipe == pipe)
+	{
+		pipe = NULL;
+		exec(getNextOpe(lastpipe));
+	}
 }
-
 
 static void ft_cd(char **token)
 {
@@ -151,7 +152,7 @@ void	exec_cmd(char **token)
 {
 	if (!token || !*token || isOpe(*token))
 		return ;
-	printf("cmd [%s]\n", *token);
+//	printf("-- cmd [%s] --\n", *token);
 	if (!strcmp(*token, "cd"))
 		ft_cd(token);
 	else
@@ -160,17 +161,18 @@ void	exec_cmd(char **token)
 
 void	exec(char **token)
 {
-	if (!token || !*token)
+	if (!token || (!*token && token != first_last[1]))
 		return ;
-	char **NextOpe = getNextOpe(token);
 
-	if (!isPipe(NextOpe))
+	if (!isOpe(*token))
+		exec_cmd(*token ? token : getPrevcmd(token));
+	else if (!isPipe(token))
 	{
-		exec_cmd(token);
-		if (*NextOpe)
-			exec(NextOpe + 1);
+		if (!isPipe(getPrevOpe(token)))
+			exec_cmd(getPrevcmd(token));
+		exec(getNextOpe(token));
 	}
-	else if (isPipe(NextOpe))
+	else if (isPipe(token))
 		exec_pipe(token);
 }
 
@@ -180,7 +182,7 @@ int		main(int argc, char **argv)
 	g_argc = argc;
 	g_argv = &argv[1];
 	first_last[0] = argv; first_last[1] = &argv[argc];
-	exec(g_argv);
+	exec(getNextOpe(g_argv));
 //	printf("%s\n", getStr(getNextcmd(g_argv)));
 //	printf("%s\n", getStr(getPrevcmd(&g_argv[argc - 2])));
 //	for (int i = 0; i <= argc; i++)
