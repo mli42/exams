@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/30 10:25:49 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 12:31:13 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ char	**g_argv;
 int		g_argc;
 
 char	**first_last[2];
+
+int		g_do_pipe = 0;
 
 static int	ft_strlen(const char *const str)
 {
@@ -33,10 +35,69 @@ static void	ft_putendl_fd(const char *const str, int const fd, const int newline
 		write(fd, "\n", 1);
 }
 
+void	exec(char **token);
+
+static char **PrevChild(char **token)
+{
+	char **res;
+
+	if (*(res = getPrevOpe(token)) == NULL)
+		res = getPrevcmd(token);
+	return (res);
+}
+
+static char **NextChild(char **token)
+{
+	char **res;
+
+	if (*(res = getNextOpe(token)) == NULL)
+		res = getNextcmd(token);
+	return (res);
+}
+
+static void	ft_do_pipe(char **token)
+{
+	pid_t	pid;
+	int		fildes[2];
+
+	if (pipe(fildes) == -1)
+		;
+	if ((pid = fork()) == 0)
+	{
+		close(fildes[0]);
+		dup2(fildes[1], 1);
+		exec(PrevChild(token));
+		close(fildes[1]);
+	}
+	else
+	{
+		close(fildes[1]);
+		dup2(fildes[0], 0);
+		exec(NextChild(token));
+		close(fildes[0]);
+		waitpid(pid, NULL, 0);
+	}
+	(void)token;
+}
+
 void	exec_pipe(char **token)
 {
-	ft_putendl_fd("Lol. Do pipes", 1, 1);
-	(void)token;
+	pid_t	pid;
+	char	**lastpipe = token;
+	char	**tmp;
+
+	if (g_do_pipe == 0 && ++g_do_pipe)
+		while (*(tmp = getNextOpe(lastpipe)) && !strcmp(*tmp, "|"))
+			lastpipe = tmp;
+//	printf("%s | %s\n", getStr(getPrevcmd(lastpipe)), getStr(getNextcmd(lastpipe)));
+	if ((pid = fork()) == 0)
+	{
+		ft_do_pipe(lastpipe);
+		exit(0);
+	}
+	else
+		waitpid(pid, NULL, 0);
+	(void)ft_do_pipe;
 }
 
 static void ft_cd(char **token)
