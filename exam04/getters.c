@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/30 10:20:20 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 15:49:43 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ extern char	**first_last[2];
 
 int		isOpe(char *str)
 {
+	if (!str)
+		return (0);
 	if (!strcmp(str, "|") || !strcmp(str, ";"))
 		return (1);
 	return (0);

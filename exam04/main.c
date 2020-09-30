@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/30 15:05:19 by mli              ###   ########.fr       */
+/*   Updated: 2020/09/30 16:03:50 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ static char **PrevChild(char **token)
 
 	if (*(res = getPrevOpe(token)) == NULL && !isPipe(res))
 		res = getPrevcmd(token);
+	if (res == token)
+		return (NULL);
 	return (res);
 }
 
