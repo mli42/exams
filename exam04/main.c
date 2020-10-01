@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/09/30 23:59:23 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/01 11:03:43 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static char **PrevChild(char **token)
 {
 	char **res;
 
-	if (*(res = getPrevOpe(token)) == NULL && !isPipe(res))
+	if (*(res = getPrevOpe(token)) == NULL || !isPipe(res))
 		res = getPrevcmd(token);
 	if (res == token)
 		return (NULL);
@@ -112,7 +112,8 @@ void	exec_pipe(char **token)
 	if (lastpipe == pipe)
 	{
 		pipe = NULL;
-		exec(getNextOpe(lastpipe));
+		if (getNextOpe(lastpipe) != first_last[1])
+			exec(getNextOpe(lastpipe));
 	}
 }
 
