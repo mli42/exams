@@ -6,14 +6,11 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/10/01 11:03:43 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/01 23:52:43 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "microshell.h"
-
-char	**g_argv;
-int		g_argc;
 
 char	**first_last[2];
 
@@ -180,13 +177,6 @@ void	exec(char **token)
 int		main(int argc, char **argv)
 {
 	argv[0] = NULL;
-	g_argc = argc;
-	g_argv = &argv[1];
 	first_last[0] = argv; first_last[1] = &argv[argc];
-	exec(getNextOpe(g_argv));
-//	printf("%s\n", getStr(getNextcmd(g_argv)));
-//	printf("%s\n", getStr(getPrevcmd(&g_argv[argc - 2])));
-//	for (int i = 0; i <= argc; i++)
-//		printf("END: [%3d] [%ld] [%s]\n", i, (long int)&argv[i], argv[i]);
-	(void)argc; (void)argv;
+	exec(getNextOpe(argv));
 }
