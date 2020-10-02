@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:49 by mli               #+#    #+#             */
-/*   Updated: 2020/09/29 12:22:14 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/02 10:20:34 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ char	**getNextOpe(char **current);
 char	**getPrevOpe(char **current);
 char	**getNextcmd(char **current);
 char	**getPrevcmd(char **current);
-
-char	*getStr(char **array);
 
 int		isOpe(char *str);
 

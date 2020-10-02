@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/10/01 23:52:43 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/02 10:12:28 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ static char **PrevChild(char **token)
 
 	if (*(res = getPrevOpe(token)) == NULL || !isPipe(res))
 		res = getPrevcmd(token);
-	if (res == token)
-		return (NULL);
 	return (res);
 }
 
@@ -100,8 +98,6 @@ void	exec_pipe(char **token)
 			lastpipe = tmp;
 		pipe = lastpipe;
 	}
-//	printf("%s [%s] %s\n",
-//		getStr(getPrevcmd(lastpipe)), *token, getStr(getNextcmd(lastpipe)));
 	if ((pid = fork()) == 0)
 		ft_do_pipe(lastpipe);
 	else
@@ -150,7 +146,6 @@ void	exec_cmd(char **token)
 {
 	if (!token || !*token || isOpe(*token))
 		return ;
-//	printf("-- cmd [%s] --\n", *token);
 	if (!strcmp(*token, "cd"))
 		ft_cd(token);
 	else
@@ -180,3 +175,7 @@ int		main(int argc, char **argv)
 	first_last[0] = argv; first_last[1] = &argv[argc];
 	exec(getNextOpe(argv));
 }
+
+/*
+./microshell /bin/echo lol "|" /bin/cat "|" /bin/cat -e ";" /bin/echo hey "|" /bin/cat -e "|" /usr/bin/env pbcopy ";" /bin/echo mdr ";" /bin/echo lolxd "|" /bin/cat -e ";" /bin/echo xdptdr ";"
+*/
