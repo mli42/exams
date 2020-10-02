@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/28 15:29:10 by mli               #+#    #+#             */
-/*   Updated: 2020/10/02 10:12:28 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/02 14:26:43 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ static void ft_cd(char **token)
 {
 	char	**argv1 = token + 1;
 
-	if (!*argv1 || isOpe(*argv1) || *(argv1 + 1))
+	if (!*argv1 || isOpe(*argv1) || (*(argv1 + 1) && !isOpe(*(argv1 + 1))))
 		ft_putendl_fd("error: cd: bad arguments", 2, 1);
 	else if (chdir(*argv1) == -1)
 	{
