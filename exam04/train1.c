@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 10:56:27 by mli               #+#    #+#             */
-/*   Updated: 2020/10/06 14:35:40 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/08 16:34:41 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,9 @@ void	ft_do_pipe(char **token)
 		dup2(fildes[0], 0);
 		exec(NextChild(token));
 		close(fildes[0]);
-		ft_waitpid(pid);
+		waitpid(pid, NULL, 0);
 	}
-	exit(0);
+	exit(exit_status);
 }
 
 void	exec_pipe(char **token)
