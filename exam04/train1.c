@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 10:56:27 by mli               #+#    #+#             */
-/*   Updated: 2020/10/15 10:49:50 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/15 12:25:13 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	ft_putendl_fd(int const fd, char const *const str, const int newline)
 
 char	**getNextOpe(char **token)
 {
-	if (token == first_last[0] || (*token && isOpe(token)))
+	if (token == first_last[0] || isOpe(token))
 		token++;
 	while (*token && !isOpe(token))
 		token++;
@@ -66,7 +66,7 @@ char	**getNextOpe(char **token)
 
 char	**getPrevOpe(char **token)
 {
-	if (token == first_last[1] || (*token && isOpe(token)))
+	if (token == first_last[1] || isOpe(token))
 		token--;
 	while (*token && !isOpe(token))
 		token--;
@@ -95,11 +95,10 @@ void	fatal_error(void)
 	exit(1);
 }
 
-int		ft_fork(pid_t *pid)
+void	ft_fork(pid_t *pid)
 {
 	if ((*pid = fork()) == -1)
-		return (0);
-	return (1);
+		fatal_error();
 }
 
 void	ft_waitpid(const pid_t pid)
@@ -135,19 +134,20 @@ void	ft_do_pipe(char **token)
 
 	if (pipe(fildes) == -1)
 		fatal_error();
-	if (!ft_fork(&pid))
-		fatal_error();
+	ft_fork(&pid);
 	if (pid == 0)
 	{
 		close(fildes[0]);
-		dup2(fildes[1], 1);
+		if (dup2(fildes[1], 1) == -1)
+			fatal_error();
 		exec(PrevChild(token));
 		close(fildes[1]);
 	}
 	else
 	{
 		close(fildes[1]);
-		dup2(fildes[0], 0);
+		if (dup2(fildes[0], 0) == -1)
+			fatal_error();
 		exec(NextChild(token));
 		close(fildes[0]);
 		waitpid(pid, NULL, 0);
@@ -168,8 +168,7 @@ void	exec_pipe(char **token)
 			last_pipe = tmp;
 		pipe = last_pipe;
 	}
-	if (!ft_fork(&pid))
-		fatal_error();
+	ft_fork(&pid);
 	if (pid == 0)
 		ft_do_pipe(last_pipe);
 	else
@@ -187,8 +186,7 @@ void	ft_binary(char **token)
 	 pid_t pid;
 	 extern char **environ;
 
-	 if (!ft_fork(&pid))
-		 fatal_error();
+	 ft_fork(&pid);
 	 if (pid != 0)
 	 {
 		 ft_waitpid(pid);
