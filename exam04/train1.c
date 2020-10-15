@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 10:56:27 by mli               #+#    #+#             */
-/*   Updated: 2020/10/08 16:34:41 by mli              ###   ########.fr       */
+/*   Updated: 2020/10/15 10:49:50 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ int		isSemi(char **str)
 	return (1);
 }
 
-int		isOpe(char *str)
+int		isOpe(char **str)
 {
-	if (isPipe(&str) || isSemi(&str))
+	if (isPipe(str) || isSemi(str))
 		return (1);
 	return (0);
 }
@@ -57,18 +57,18 @@ void	ft_putendl_fd(int const fd, char const *const str, const int newline)
 
 char	**getNextOpe(char **token)
 {
-	if (token == first_last[0] || (*token && isOpe(*token)))
+	if (token == first_last[0] || (*token && isOpe(token)))
 		token++;
-	while (*token && !isOpe(*token))
+	while (*token && !isOpe(token))
 		token++;
 	return (token);
 }
 
 char	**getPrevOpe(char **token)
 {
-	if (token == first_last[1] || (*token && isOpe(*token)))
+	if (token == first_last[1] || (*token && isOpe(token)))
 		token--;
-	while (*token && !isOpe(*token))
+	while (*token && !isOpe(token))
 		token--;
 	return (token);
 }
@@ -205,18 +205,21 @@ void	ft_cd(char **token)
 {
 	char **argv1 = token + 1;
 
-	if (!*argv1 || isOpe(*argv1) || (*(argv1 + 1) && !isOpe(*(argv1 + 1))))
+	exit_status = 1;
+	if (!*argv1 || isOpe(argv1) || (*(argv1 + 1) && !isOpe(argv1 + 1)))
 		ft_putendl_fd(2, "error: cd: bad arguments", 1);
 	else if (chdir(*argv1) == -1)
 	{
 		ft_putendl_fd(2, "error: cd: cannot change directory to ", 0);
 		ft_putendl_fd(2, *argv1, 1);
 	}
+	else
+		exit_status = 0;
 }
 
 void	exec_cmd(char **token)
 {
-	if (!token || !*token || isOpe(*token))
+	if (!token || !*token || isOpe(token))
 		return ;
 	if (!strcmp(*token, "cd"))
 		ft_cd(token);
@@ -229,7 +232,7 @@ void	exec(char **token)
 	if (!token || (!*token && token != first_last[1]))
 		return ;
 
-	if (!isOpe(*token))
+	if (!isOpe(token))
 		exec_cmd(*token ? token : getPrevCmd(token));
 	else if (!isPipe(token))
 	{
