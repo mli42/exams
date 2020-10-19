@@ -6,7 +6,7 @@
 #    By: mli <mli@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/09/11 12:06:29 by mli               #+#    #+#              #
-#    Updated: 2020/10/01 00:00:09 by mli              ###   ########.fr        #
+#    Updated: 2020/10/19 12:26:36 by mli              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,8 @@ ifeq ($(f), f)
 	CFLAGS += -fsanitize=address -g3
 endif
 
-SRCS_FILES = main.c getters.c
-
-HEADER_FILES = microshell.h
+SRCS_FILES = gvp.c
+HEADER_FILES = gvp.h
 
 OBJS_PATH = ./obj/
 OBJS = ${addprefix ${OBJS_PATH}, ${SRCS_FILES:.c=.o}}
