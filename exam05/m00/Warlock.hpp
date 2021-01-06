@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 17:09:12 by mli               #+#    #+#             */
-/*   Updated: 2021/01/06 17:57:23 by mli              ###   ########.fr       */
+/*   Updated: 2021/01/06 23:44:54 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Warlock {
 			std::cout << this->_name << ": I am " << this->_name << ", " <<  this->_title << "!"  << std::endl;
 		};
 
-		void	setTitle(const std::string new_title) {
+		void	setTitle(const std::string &new_title) {
 			this->_title = new_title;
 		};
 
@@ -40,6 +40,16 @@ class Warlock {
 		std::string		getTitle(void) const { return this->_title; };
 
 	private:
+		Warlock(void) { };
+		Warlock(const Warlock &rhs) { *this = rhs; };
+		Warlock	&operator=(const Warlock &rhs) {
+			if (this == &rhs)
+				return (*this);
+			this->_name = rhs._name;
+			this->_title = rhs._title;
+			return (*this);
+		};
+
 		std::string		_name;
 		std::string		_title;
 };
