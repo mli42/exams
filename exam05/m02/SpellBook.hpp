@@ -1,39 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ATarget.hpp                                        :+:      :+:    :+:   */
+/*   SpellBook.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/13 17:11:51 by mli               #+#    #+#             */
-/*   Updated: 2021/01/14 00:54:27 by mli              ###   ########.fr       */
+/*   Created: 2021/01/14 00:33:35 by mli               #+#    #+#             */
+/*   Updated: 2021/01/14 00:36:52 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ATarget_HPP
-# define ATarget_HPP
+#ifndef SpellBook_HPP
+# define SpellBook_HPP
 
 # include <iostream>
 # include <string>
 
+# include <vector>
 # include "ASpell.hpp"
 
-class ATarget {
+class SpellBook {
 	private:
-	protected:
-		std::string type;
+		typedef std::vector<ASpell*> SpellBookType;
+		SpellBookType	_content;
 
+		SpellBook(const SpellBook &src);
+		SpellBook &operator=(const SpellBook &src);
 	public:
-		ATarget(void);
-		ATarget(const ATarget &src);
-		ATarget &operator=(const ATarget &src);
-		ATarget(std::string const &type);
-		virtual ~ATarget(void);
+		SpellBook(void);
+		~SpellBook(void);
 
-		std::string const	&getType(void) const;
-		void				getHitBySpell(const ASpell &spell) const;
-
-		virtual ATarget *clone(void) const = 0;
+		void				learnSpell(ASpell *spell);
+		void				forgetSpell(std::string const &spell);
+		ASpell				*createSpell(std::string const &spell);
 };
 
 #endif

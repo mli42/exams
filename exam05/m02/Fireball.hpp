@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ATarget.hpp                                        :+:      :+:    :+:   */
+/*   Fireball.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/13 17:11:51 by mli               #+#    #+#             */
-/*   Updated: 2021/01/14 00:54:27 by mli              ###   ########.fr       */
+/*   Created: 2021/01/14 00:26:40 by mli               #+#    #+#             */
+/*   Updated: 2021/01/14 00:27:03 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ATarget_HPP
-# define ATarget_HPP
+#ifndef Fireball_HPP
+# define Fireball_HPP
 
 # include <iostream>
 # include <string>
 
 # include "ASpell.hpp"
 
-class ATarget {
-	private:
-	protected:
-		std::string type;
-
+class Fireball : public ASpell {
 	public:
-		ATarget(void);
-		ATarget(const ATarget &src);
-		ATarget &operator=(const ATarget &src);
-		ATarget(std::string const &type);
-		virtual ~ATarget(void);
+		Fireball(void);
+		Fireball(const Fireball &src);
 
-		std::string const	&getType(void) const;
-		void				getHitBySpell(const ASpell &spell) const;
-
-		virtual ATarget *clone(void) const = 0;
+		virtual Fireball *clone(void) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/13 14:29:53 by mli               #+#    #+#             */
-/*   Updated: 2021/01/13 22:35:38 by mli              ###   ########.fr       */
+/*   Updated: 2021/01/14 00:43:53 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "ASpell.hpp"
 # include "ATarget.hpp"
 # include <vector>
+# include "SpellBook.hpp"
 
 class Warlock {
 	private:
@@ -29,8 +30,7 @@ class Warlock {
 		std::string name;
 		std::string title;
 
-		typedef std::vector<ASpell*> SpellBookType;
-		SpellBookType	spellbook;
+		SpellBook	spellbook;
 	public:
 		Warlock(const std::string &name, const std::string &title);
 		~Warlock(void);

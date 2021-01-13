@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ATarget.hpp                                        :+:      :+:    :+:   */
+/*   Polymorph.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/13 17:11:51 by mli               #+#    #+#             */
-/*   Updated: 2021/01/14 00:54:27 by mli              ###   ########.fr       */
+/*   Created: 2021/01/14 00:28:37 by mli               #+#    #+#             */
+/*   Updated: 2021/01/14 00:29:13 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ATarget_HPP
-# define ATarget_HPP
+#ifndef Polymorph_HPP
+# define Polymorph_HPP
 
 # include <iostream>
 # include <string>
 
 # include "ASpell.hpp"
 
-class ATarget {
-	private:
-	protected:
-		std::string type;
-
+class Polymorph : public ASpell {
 	public:
-		ATarget(void);
-		ATarget(const ATarget &src);
-		ATarget &operator=(const ATarget &src);
-		ATarget(std::string const &type);
-		virtual ~ATarget(void);
+		Polymorph(void);
+		Polymorph(const Polymorph &src);
 
-		std::string const	&getType(void) const;
-		void				getHitBySpell(const ASpell &spell) const;
-
-		virtual ATarget *clone(void) const = 0;
+		virtual Polymorph *clone(void) const;
 };
 
 #endif
