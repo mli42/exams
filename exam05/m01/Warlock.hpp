@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/13 14:29:53 by mli               #+#    #+#             */
-/*   Updated: 2021/01/13 17:50:17 by mli              ###   ########.fr       */
+/*   Updated: 2021/01/13 22:35:38 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class Warlock {
 		std::string name;
 		std::string title;
 
-		typedef vector<ASpell*> SpellBookType;
-		std::SpellBookType	spellbook;
+		typedef std::vector<ASpell*> SpellBookType;
+		SpellBookType	spellbook;
 	public:
 		Warlock(const std::string &name, const std::string &title);
 		~Warlock(void);

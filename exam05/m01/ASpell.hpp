@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/13 17:06:35 by mli               #+#    #+#             */
-/*   Updated: 2021/01/13 17:35:55 by mli              ###   ########.fr       */
+/*   Updated: 2021/01/13 22:37:44 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class ASpell {
 		ASpell(const ASpell &src);
 		ASpell &operator=(const ASpell &src);
 		ASpell(std::string const &name, std::string const &effects);
-		~ASpell(void);
+		virtual ~ASpell(void);
 
 		std::string const &getName(void) const;
 		std::string const &getEffects(void) const;

@@ -6,7 +6,7 @@
 /*   By: mli <mli@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/13 17:39:28 by mli               #+#    #+#             */
-/*   Updated: 2021/01/13 17:39:29 by mli              ###   ########.fr       */
+/*   Updated: 2021/01/13 22:37:05 by mli              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,5 @@ Fwoosh::Fwoosh(void) : ASpell("Fwoosh", "fwooshed") {
 }
 
 Fwoosh::Fwoosh(const Fwoosh &src) { *this = src; }
-
-Fwoosh::~Fwoosh(void) { }
 
 Fwoosh *Fwoosh::clone(void) const { return (new Fwoosh(*this)); }
