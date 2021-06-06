@@ -58,12 +58,20 @@ char *str_join(char *buf, char *add)
 typedef struct	s_client {
 	int				id;
 	int				fd;
+	char			*str;
 	struct s_client	*next;
 }				t_client;
 
 int			g_id = 0;
 int			g_socket = -1;
 t_client	*g_clients = NULL;
+
+void	del_client(t_client *client) {
+	if (client)
+		free(client->str);
+	close(client->fd);
+	free(client);
+}
 
 void	ft_exit(char *msg) {
 	t_client *next;
@@ -74,8 +82,7 @@ void	ft_exit(char *msg) {
 		close(g_socket);
 	while (g_clients != NULL) {
 		next = g_clients->next;
-		close(g_clients->fd);
-		free(g_clients);
+		del_client(g_clients);
 		g_clients = next;
 	}
 	exit(1);
@@ -137,6 +144,48 @@ void	new_client(fd_set *set, int *max_fd) {
 		*max_fd = client->fd;
 }
 
+void	remove_client(t_client *to_delete, fd_set *origin) {
+	t_client *curr = g_clients;
+
+	FD_CLR(to_delete->fd, origin);
+	if (curr == to_delete) {
+		g_clients = g_clients->next;
+		del_client(to_delete);
+		return ;
+	}
+	while (curr->next != to_delete)
+		curr = curr->next;
+	curr->next = to_delete->next;
+	del_client(to_delete);
+}
+
+void	ft_recv(t_client *client, fd_set *origin) {
+	char buff[125000 + 20 + 1];
+	char *msg;
+	int ret;
+
+	if ((ret = recv(client->fd, buff, 125000, MSG_DONTWAIT)) == 0) {
+		if (sprintf(buff, "server: client %d just left\n", client->id) < 0)
+			ft_exit("Fatal error");
+		send_to_clients(buff, client->id);
+		remove_client(client, origin);
+		return ;
+	}
+	else if (ret < 0)
+		return ;
+	buff[ret] = '\0';
+	if ((client->str = str_join(client->str, buff)) == NULL)
+		ft_exit("Fatal error");
+	while ((ret = extract_message(&client->str, &msg)) == 1) {
+		if (sprintf(buff, "client %d: %s", client->id, msg) < 0)
+			ft_exit("Fatal error");
+		send_to_clients(buff, client->id);
+		free(msg);
+	}
+	if (ret == -1)
+		ft_exit("Fatal error");
+}
+
 void	mini_serv(void) {
 	fd_set	origin, cpy;
 	int		max_fd = g_socket;
@@ -150,7 +199,17 @@ void	mini_serv(void) {
 			ft_exit("Fatal error");
 		if (FD_ISSET(g_socket, &cpy))
 			new_client(&origin, &max_fd);
+		{
+			t_client *curr, *next;
 
+			curr = g_clients;
+			while (curr) {
+				next = curr->next;
+				if (FD_ISSET(curr->fd, &cpy))
+					ft_recv(curr, &origin);
+				curr = next;
+			}
+		}
 	}
 }
 
