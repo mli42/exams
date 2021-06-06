@@ -193,8 +193,7 @@ void	mini_serv(void) {
 	FD_ZERO(&origin);
 	FD_SET(g_socket, &origin);
 	while (1) {
-		FD_ZERO(&cpy);
-		FD_COPY(&origin, &cpy);
+		cpy = origin;
 		if (select(max_fd + 1, &cpy, NULL, NULL, NULL) == -1)
 			ft_exit("Fatal error");
 		if (FD_ISSET(g_socket, &cpy))
