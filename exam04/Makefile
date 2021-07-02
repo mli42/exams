@@ -6,7 +6,7 @@
 #    By: mli <mli@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/09/11 12:06:29 by mli               #+#    #+#              #
-#    Updated: 2020/10/19 12:26:36 by mli              ###   ########.fr        #
+#    Updated: 2021/07/02 16:44:49 by mli              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,21 +19,20 @@ ifeq ($(f), f)
 	CFLAGS += -fsanitize=address -g3
 endif
 
-SRCS_FILES = gvp.c
-HEADER_FILES = gvp.h
+SRCS_FILES = final.c
 
 OBJS_PATH = ./obj/
 OBJS = ${addprefix ${OBJS_PATH}, ${SRCS_FILES:.c=.o}}
 
 all: ${NAME}
 
-$(NAME): ${OBJS_PATH} ${OBJS} ${HEADER_FILES}
+$(NAME): ${OBJS_PATH} ${OBJS}
 	${CC} ${CFLAGS} -o ${NAME} ${OBJS}
 
 ${OBJS_PATH}:
 	@mkdir -p $@
 
-${OBJS_PATH}%.o: %.c ${HEADER_FILES}
+${OBJS_PATH}%.o: %.c
 	${CC} ${CFLAGS} -c $< -o $@
 
 clean:
